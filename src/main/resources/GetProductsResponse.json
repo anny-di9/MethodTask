@@ -1,0 +1,24 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties":{
+      "category": {
+        "type": "string"
+      },
+      "discount": {
+        "type": ["number", "null"]
+      },
+      "id": {
+        "type":"integer"
+      },
+      "name": {
+        "type": "string"
+      },
+      "price": {
+        "type": "number"
+      }
+    },
+    "required": ["category","id", "name","price"]
+  }
+}
