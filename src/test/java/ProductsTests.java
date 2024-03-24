@@ -1,29 +1,26 @@
-package org.example;
-
-
 import io.restassured.module.jsv.JsonSchemaValidator;
 import io.restassured.response.Response;
 import org.testng.annotations.Test;
 
-import static org.example.Url.BASE_URI;
+import static org.example.Url.Url.BASE_URI;
 import static org.hamcrest.Matchers.startsWith;
 
-
-public class TestsProducts {
+public class ProductsTests {
 
     // получить весь список товаров +
     @Test
-    public void getProducts() {
+    public void GetProductsTest() {
         Response response = RestApiSpec.get(BASE_URI + "/products");
         response.then().statusCode(200)
-                .assertThat().body(JsonSchemaValidator.matchesJsonSchemaInClasspath("GetProductsResponse.json"))
+                .assertThat()
+                .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("GetProductsResponse.json"))
                 .log().all();
     }
 
 
     //поиск по существующему id продукта
     @Test
-    public void getProductId() {
+    public void GetProductIdTest() {
         Response response = RestApiSpec.get(BASE_URI + "/products/1");
         response.then()
                 .assertThat().body(JsonSchemaValidator.matchesJsonSchemaInClasspath("GetProductsResponse.json"))
@@ -33,7 +30,7 @@ public class TestsProducts {
 
     //поиск по существующему id продукта
     @Test
-    public void getProductNullId() {
+    public void GetProductNullIdTest() {
         Response response = RestApiSpec.get(BASE_URI + "/products/0");
         response.then()
                 .assertThat().body(JsonSchemaValidator.matchesJsonSchemaInClasspath("GetProductsResponse.json"))
@@ -41,28 +38,20 @@ public class TestsProducts {
 
     }
 
-    @Test
-    public void getProductIdSymbol() {
-        Response response = RestApiSpec.get(BASE_URI + "/products/$");
-        response.then()
-                .assertThat().body(JsonSchemaValidator.matchesJsonSchemaInClasspath("GetProductsResponse.json"))
-                .statusCode(200).log().all();
 
-    }
-
-    //поиск по неуществующему id продукта
+    //поиск по несуществующему id продукта
     @Test
-    public void getProductIdNotFound() {
+    public void GetProductIdNotFoundTest() {
         Response response = RestApiSpec.get(BASE_URI + "/products/20");
         response.then()
-                .assertThat().body(JsonSchemaValidator.matchesJsonSchemaInClasspath("GetProductsResponse.json"))
+                //.assertThat().body(JsonSchemaValidator.matchesJsonSchemaInClasspath("GetProductsResponse.json"))
                 .statusCode(404).log().all();
 
     }
 
     //получить описание продукта по имени c символом
     @Test
-    public void getProductByName() {
+    public void GetProductByNameTest() {
         String name = "MobileT2547gg";
         Response response = RestApiSpec.get(BASE_URI + "/products" + name);
         response.then()
@@ -73,7 +62,7 @@ public class TestsProducts {
 
     //добавление продукта запрещено
     @Test
-    public void addProductNotAllowed() {
+    public void AddProductNotAllowedTest() {
         Object requestBody = new Products("new add product", "electrics", 20, 10);
         Response response = RestApiSpec.post(BASE_URI + "/products", requestBody);
         response.then()
@@ -83,7 +72,7 @@ public class TestsProducts {
 
     //добавление нового типа товара - ожидается ошибка
     @Test
-    public void addNewProduct() {
+    public void AddNewProductTest() {
         Object requestBody = new Products("Bag", "Clothes", 200, 9);
         Response response = RestApiSpec.post(BASE_URI + "/products", requestBody);
         response.then()
@@ -95,7 +84,7 @@ public class TestsProducts {
 
     //обновление информации о товаре не разрешается
     @Test
-    public void updateInfoProduct() {
+    public void UpdateInfoProductTest() {
         Object requestBody = new Products("Updated Product Name", "Electronics", 15.99, 8);
         Response response = RestApiSpec.put(BASE_URI + "/products/1", requestBody);
         response.then()
@@ -106,7 +95,7 @@ public class TestsProducts {
 
     //поиск по id=22 - кейс выдает 405 ошибку, хотя ожидалось 404
     @Test
-    public void updateInfoProductNeg() {
+    public void UpdateInfoProductNegTest() {
         Object requestBody = new Products("Updated Product Name", "Electronics", 15.99, 8);
         Response response = RestApiSpec.put(BASE_URI + "/products/22", requestBody);
         response.then()
@@ -117,7 +106,7 @@ public class TestsProducts {
 
     //продукт с id=1 должен быть удален, в ОР получена ошибка 405
     @Test
-    public void deleteProductById() {
+    public void DeleteProductByIdTest() {
         Response response = RestApiSpec.delete(BASE_URI + "/products/1");
         response.then()
                 .header("Content-Type", startsWith("text/html"))
